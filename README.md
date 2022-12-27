@@ -1,3 +1,136 @@
+# SOLUTION
+Thank you for giving this opportunity. Here is my solution.
+
+### **Build the project**
+I am using Dockerfile to build the FastAPI app. 
+
+Commands
+```
+docker build -t be_challenge .
+docker run -p 80:80 be_challenge
+```
+Access API endpoint using url `http://0.0.0.0:80/planner/get_planners` 
+### **API Endpoint**
+
+I am using one API endpoint `planner/get_planners` for 
+  1. pagination
+  2. filtering
+  3. sorting
+
+
+  Payload schema
+
+  ```
+  page_no               : int             =  0
+  page_limit            : int             =  50
+  sort_by               : list            =  ['id']
+  sort_order            : str             =  "desc"
+  filter_by             : dict            =  {}
+  ```
+  page_no: current page number. 
+  page_limit: Max number of planning data on each page
+  sort_by: List of columns names
+  sort_order: sort data by ascending or descending order
+  filter_by: Data filtering criteria
+
+
+  **Pagination**
+
+  We have total 10000 plan data. Each page can have `page_limit` records. Page No count starts from `0`. 
+
+  **Sorting**
+
+  API endpoint support multi column sorting. 
+  ``sort_by`` payload parameters accepts list of key names. 
+
+  Example payload:
+  ```
+  {
+    "page_no":1,
+    "sort_by":["totalHours","endDate"],
+    "sort_order":"asc"
+  }
+  ```
+
+
+  **Filtering**
+
+  Filtering for following columns takes Columns name and list of values.
+
+    1. originalId
+    2. talentId
+    3. talentName
+    4. talentGrade
+    5. bookingGrade
+    6. operatingUnit
+    7. officeCity
+    8. officePostalCode
+    9. jobManagerName
+    10. jobManagerId
+    11. clientName
+    12. clientId
+    13. industry
+    14. isUnassigned
+  Example: 
+
+  If you want to filter by `officeCity` names, then payload should be
+  
+  ```
+  {
+    "page_no":1,
+    "filter_by": {
+        "officeCity": ["Hamburg","Neuruppin"]
+    }
+  }
+  ```
+
+  Example of filtering by skill, payload should be 
+
+  ```
+  {
+    "page_no": 1,
+    "filter_by": {
+        "skills": [
+            {
+                "name": "TypeScript",
+                "category": "Coding Language"
+            },
+            {
+                "name": "Javascript",
+                "category": "Coding Language"
+            }
+        ]
+    }
+  }
+  ```
+
+  If you want to filter by `startDate/endDate`, payload should be 
+
+  ```
+  {
+    "page_no":1,
+    "filter_by": {
+             "startDate":["2022-01-11 00:00 ","2022-02-11 00:00 "]
+    }
+  }
+  ```
+
+
+  Similarly if you want to filter by `totalHours`, then you have to pass a lower and upper limit of `totalHours`. Example Payload 
+
+  ```
+  {
+    "page_no":1,
+    "filter_by": {
+        "totalHours":[5,10]
+    }
+  }
+  ```
+
+
+We can use combine of all of these.  
+
+
 # Backend Coding Challenge
 
 At aspaara a squad of superheroes works on giving superpowers to planning teams.
